@@ -1,0 +1,76 @@
+{
+  "users": [
+    {
+      "id": "bba436e6-bd3a-4cf2-9938-02f294e369cd",
+      "username": "hiam",
+      "hashedPassword": "$2b$10$BOM/f303lg/P8WBrVaeb7OfGuMhJ714L08Ilred6ZSR3VbPPjhoPC"
+    },
+    {
+      "id": "70cc37d4-da0e-45de-90f5-6b32f90bd3d3",
+      "username": "ngn",
+      "hashedPassword": "$2b$10$FRrOXV/NV50xRVmr/b.bY.JcEtB3Kqx7iNhSJbRaLPjufvAnQXSom"
+    }
+  ],
+  "channels": [
+    {
+      "id": "c44e7979-6610-4d1c-8cf2-ba4df5658b31",
+      "channelname": "tydet",
+      "private": false,
+      "members": [
+        "bba436e6-bd3a-4cf2-9938-02f294e369cd"
+      ],
+      "messages": [
+        {
+          "id": "9a1bfcf9-72e4-42f0-99f5-9de76ce8232d",
+          "text": "hej där",
+          "userId": "bba436e6-bd3a-4cf2-9938-02f294e369cd",
+          "postDate": "2023-02-03T22:25:20.175Z",
+          "lastUpdatedDate": "2023-02-03T22:25:20.175Z",
+          "deleted": false
+        },
+        {
+          "id": "3c915030-453b-43a1-8dba-56cf04c2ba44",
+          "text": "hii",
+          "userId": "70cc37d4-da0e-45de-90f5-6b32f90bd3d3",
+          "postDate": "2023-02-03T22:25:58.969Z",
+          "lastUpdatedDate": "2023-02-03T22:25:58.969Z",
+          "deleted": false
+        },
+        {
+          "id": "fa046bb3-f9d9-423b-86fc-020b9249ffc1",
+          "text": "hej därrr",
+          "userId": "70cc37d4-da0e-45de-90f5-6b32f90bd3d3",
+          "postDate": "2023-02-03T22:27:14.181Z",
+          "lastUpdatedDate": "2023-02-03T22:27:14.181Z",
+          "deleted": false
+        },
+        {
+          "id": "c153eebe-1dcc-449d-a3f8-a4dafba5b771",
+          "text": "hallåå",
+          "userId": "70cc37d4-da0e-45de-90f5-6b32f90bd3d3",
+          "postDate": "2023-02-03T22:28:49.033Z",
+          "lastUpdatedDate": "2023-02-03T22:28:49.033Z",
+          "deleted": false
+        }
+      ]
+    },
+    {
+      "id": "72950b0b-a6dd-41b4-8c44-f31041b879d4",
+      "channelname": "tydetprivat",
+      "private": true,
+      "members": [
+        "bba436e6-bd3a-4cf2-9938-02f294e369cd"
+      ],
+      "messages": [
+        {
+          "id": "6a5d540e-b85f-4dad-b1a9-821608a043fa",
+          "text": "hej därrr",
+          "userId": "bba436e6-bd3a-4cf2-9938-02f294e369cd",
+          "postDate": "2023-02-03T22:25:43.720Z",
+          "lastUpdatedDate": "2023-02-03T22:25:43.720Z",
+          "deleted": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <!-- visa fel och andra meddelande -->
+    <div id="notification"></div>
+    <form id="login-form">
+      <h2>Login</h2>
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" />
+      <br />
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" />
+      <br />
+      <button id="login-button" type="submit">
+        Login
+
+      </button>
+    </form>
+
+    <div id="user-details">
+      <h3></h3>
+      <button onclick="logout()">Logout</button>
+    </div>
+
+    <div id="channel-list">
+      <h2>Channels</h2>
+      <ul id="channels"></ul>
+      <div>
+        <input type="text" id="channel-create-name"/ >
+        <label for="hard">
+          <input type="checkbox" id="channel-create-private" />
+          private
+        </label>
+        <button type="button" onclick="createChannel()" >
+          create channel
+        </button>
+      </div>
+    </div>
+
+    <div id="chatbox">
+      <h2></h2>
+      <ul id="chat-messages"></ul>
+      <div>
+        <input type="text" id="chat-message-input" />
+        <button type="button" onclick="sendmessage()">
+          send
+        </button>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="scripts.js"></script>
+</html>
