@@ -15,6 +15,7 @@ const app = express();
 const port = 3000;
 app.use(express.json());
 app.use(cors())
+app.use(express.static('static'))
 
 const adapter = new JSONFile('db.json')
 const db = new Low(adapter)

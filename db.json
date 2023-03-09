@@ -9,6 +9,16 @@
       "id": "70cc37d4-da0e-45de-90f5-6b32f90bd3d3",
       "username": "ngn",
       "hashedPassword": "$2b$10$FRrOXV/NV50xRVmr/b.bY.JcEtB3Kqx7iNhSJbRaLPjufvAnQXSom"
+    },
+    {
+      "id": "b7005108-f429-462e-9b52-df5239f64bca",
+      "username": "test1",
+      "hashedPassword": "$2b$10$Pc4tsVdykUUKOmnXkpV6j.PRIJ7wYXCh2MfAOXMFu0GgQ4omNlb26"
+    },
+    {
+      "id": "5a969e80-4632-414f-bb0a-9a5ebf429529",
+      "username": "test2",
+      "hashedPassword": "$2b$10$pQJzQaPhf4inBnwdp1xEW.ByNjNtNwZvzQdqqdpUmGp9F.br4lCZa"
     }
   ],
   "channels": [
@@ -68,6 +78,95 @@
           "userId": "bba436e6-bd3a-4cf2-9938-02f294e369cd",
           "postDate": "2023-02-03T22:25:43.720Z",
           "lastUpdatedDate": "2023-02-03T22:25:43.720Z",
+          "deleted": false
+        }
+      ]
+    },
+    {
+      "id": "28b4495a-83de-4f90-a481-0c9f61789d08",
+      "channelname": "test1",
+      "private": false,
+      "members": [
+        "b7005108-f429-462e-9b52-df5239f64bca"
+      ],
+      "messages": [
+        {
+          "id": "6b55d212-ed27-4e29-99b5-cb12e36a5e69",
+          "text": "hej hej",
+          "userId": "b7005108-f429-462e-9b52-df5239f64bca",
+          "postDate": "2023-03-09T21:11:17.383Z",
+          "lastUpdatedDate": "2023-03-09T21:11:17.383Z",
+          "deleted": false
+        }
+      ]
+    },
+    {
+      "id": "610e4853-36a7-4d06-80ca-dc950a4de138",
+      "channelname": "test2",
+      "private": false,
+      "members": [
+        "b7005108-f429-462e-9b52-df5239f64bca"
+      ],
+      "messages": [
+        {
+          "id": "97dc3664-b49b-4c8c-9104-1ad1af74e294",
+          "text": "hello",
+          "userId": "b7005108-f429-462e-9b52-df5239f64bca",
+          "postDate": "2023-03-09T21:14:56.839Z",
+          "lastUpdatedDate": "2023-03-09T21:14:56.839Z",
+          "deleted": false
+        }
+      ]
+    },
+    {
+      "id": "bf4c4351-2bee-4102-8b08-d816ad1ede21",
+      "channelname": "test1privat",
+      "private": true,
+      "members": [
+        "b7005108-f429-462e-9b52-df5239f64bca"
+      ],
+      "messages": [
+        {
+          "id": "461311ea-f54e-4802-b102-cdef2d2a1dfa",
+          "text": "hi",
+          "userId": "b7005108-f429-462e-9b52-df5239f64bca",
+          "postDate": "2023-03-09T21:16:26.653Z",
+          "lastUpdatedDate": "2023-03-09T21:16:26.653Z",
+          "deleted": false
+        },
+        {
+          "id": "01e56df0-4461-438d-a385-fd441256a2cb",
+          "text": "helloo",
+          "userId": "b7005108-f429-462e-9b52-df5239f64bca",
+          "postDate": "2023-03-09T22:18:09.848Z",
+          "lastUpdatedDate": "2023-03-09T22:18:09.848Z",
+          "deleted": false
+        }
+      ]
+    },
+    {
+      "id": "02c57388-9bf8-45ee-a956-264451c44375",
+      "channelname": "tänk",
+      "private": true,
+      "members": [
+        "b7005108-f429-462e-9b52-df5239f64bca"
+      ],
+      "messages": []
+    },
+    {
+      "id": "4b7d7fd2-68d5-4490-ba5c-493911d2f82d",
+      "channelname": "test2privat",
+      "private": true,
+      "members": [
+        "5a969e80-4632-414f-bb0a-9a5ebf429529"
+      ],
+      "messages": [
+        {
+          "id": "328c48cf-be7e-44c0-9b60-e2716067da81",
+          "text": "hi",
+          "userId": "5a969e80-4632-414f-bb0a-9a5ebf429529",
+          "postDate": "2023-03-09T21:16:02.304Z",
+          "lastUpdatedDate": "2023-03-09T21:16:02.304Z",
           "deleted": false
         }
       ]
