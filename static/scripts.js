@@ -23,12 +23,13 @@ function getDecodejwt(token) {
 function logout() {
     jwt = "";
     //  ta bort chatt också
-    joinedChannel = null;
+    channel = null;
     localStorage.removeItem("jwt");
     document.getElementById("login-form").style.display = "block";
-    document.getElementById("channel-list").style.display = "none";
-    document.getElementById("chatbox").style.display = "none";
     document.getElementById("user-details").style.display = "none";
+    document.getElementById("chatbox").style.display = "none";
+    document.getElementById("channel-create").style.display = "none";
+    showChannels();
 }
 
 loginForm.addEventListener("submit", async (e) => {
@@ -64,31 +65,35 @@ function showLoggedIn() {
     var h3 = userdetails.querySelector("h3");
     h3.innerText = 'logged in: ' + getDecodejwt(jwt).username;
     document.getElementById("login-form").style.display = "none";
-    document.getElementById("channel-list").style.display = "block";
+    document.getElementById("channel-create").style.display = "block";
     document.getElementById("chatbox").style.display = "none";
     showChannels();
 }
 
 function showChatmessages() {
+    if (!channel) {
+        return;
+    }
+
     var ul = document.getElementById("chat-messages");
     ul.style.display = "block";
-    var jwt=localStorage.getItem("jwt");
-    
+    var jwt = localStorage.getItem("jwt");
 
-    fetch("http://localhost:3000/channels/" + channel.id +"/messages",{
+    fetch("http://localhost:3000/channels/" + channel.id + "/messages", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("jwt")}
-        })
+            "Authorization": jwt ? "Bearer " + jwt : ""
+        }
+    })
         .then(response => response.json())
         .then(messages => {
             ul.innerHTML = "";
             messages.forEach(message => {
-                var li =document.createElement("li");
-                li.innerHTML = '<b>('+new Date(message.postDate).toLocaleString()+') '+ message.username + ':</b> '+ message.text;
-            ul.appendChild(li);
-        });
+                var li = document.createElement("li");
+                li.innerHTML = '<b>(' + new Date(message.postDate).toLocaleString() + ') ' + message.username + ':</b> ' + message.text;
+                ul.appendChild(li);
+            });
 
         })
         .catch(error => {
@@ -96,47 +101,47 @@ function showChatmessages() {
         });
 }
 
-function joinChannel(joinedChannel) { 
+function joinChannel(joinedChannel) {
     if (joinedChannel) {
-         channel = JSON.parse(atob(joinedChannel));
-        console.log(channel)
+        channel = JSON.parse(atob(joinedChannel));
 
         var chatbox = document.getElementById("chatbox");
         chatbox.style.display = "block";
         var h2 = chatbox.querySelector("h2");
-        h2.innerText = channel.channelname+' chatt';
+        h2.innerText = channel.channelname + ' chatt';
         showChatmessages();
     }
-    
+
 
 }
 
 async function showChannels() {
-    document.getElementById("channel-list").style.display = "block";
-    var jwt=localStorage.getItem("jwt");
-    var ul = document.getElementById("channels");
+
+    const jwt = localStorage.getItem("jwt");
+    const ul = document.getElementById("channels");
     ul.innerHTML = "";
 
-    fetch("http://localhost:3000/channels",{
+    fetch("http://localhost:3000/channels", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("jwt")}
-        })
+            'Authorization': jwt ? 'Bearer ' + jwt : ''
+        }
+    })
         .then(response => response.json())
         .then(channels => {
             channels.forEach(channel => {
-                var li =document.createElement("li");
-                var private=channel.private &&!channel.members.some(item => item === getDecodejwt(jwt).userId ); 
-   
+                var li = document.createElement("li");
+                var private = channel.private && (!jwt || !channel.members.some(item => item === getDecodejwt(jwt)?.userId));
 
-                li.innerHTML = channel.channelname + (private? "- Private" : "");
+
+                li.innerHTML = channel.channelname + (private ? "- Private" : "");
                 if (!private) {
-                        //btoa(JSON.stringify(channel))  Uncaught SyntaxError: Unexpected identifier 'Object
-                        li.innerHTML +='<button onclick="joinChannel(\'' + btoa(JSON.stringify(channel)) + '\')">Join</button>'
+                    //btoa(JSON.stringify(channel))  Uncaught SyntaxError: Unexpected identifier 'Object
+                    li.innerHTML += '<button onclick="joinChannel(\'' + btoa(JSON.stringify(channel)) + '\')">Join</button>'
                 }
-            ul.appendChild(li);
-        });
+                ul.appendChild(li);
+            });
 
         })
         .catch(error => {
@@ -151,12 +156,13 @@ function createChannel() {
     var endpoint = "http://localhost:3000/channels/" + input.value + "?isPrivate=" + checkbox.checked;
     var jwt = localStorage.getItem("jwt");
 
-    fetch(endpoint,{
-        method: "POST" ,
-        headers:{
+    fetch(endpoint, {
+        method: "POST",
+        headers: {
             "Content-Type": "application/json",
-            'Authorization': 'Bearer '+jwt
-        }})
+            'Authorization': jwt ? 'Bearer ' + jwt : ''
+        }
+    })
         .then(response => response.text())
         .then(data => {
             showChannels();
@@ -174,17 +180,16 @@ function sendmessage() {
     var textmessage = document.getElementById("chat-message-input").value;
 
     if (textmessage && channel) {
-        var endpoint = "http://localhost:3000/channels/" + channel.id +"/messages";
+        var endpoint = "http://localhost:3000/channels/" + channel.id + "/messages";
         var jwt = localStorage.getItem("jwt");
-        console.log(textmessage)
-        fetch(endpoint,{
+        fetch(endpoint, {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer '+jwt
+                'Content-Type': 'application/json',
+                'Authorization': jwt ? 'Bearer ' + jwt : ''
             },
             body: JSON.stringify({
-              text: textmessage
+                text: textmessage
             })
         })
             .then(response => response.text())
@@ -195,10 +200,10 @@ function sendmessage() {
                 console.error(error);
             });
     }
-    
+
 }
 
-if (!jwt|| jwtIsExpire(jwt)) {
+if (!jwt || jwtIsExpire(jwt)) {
     logout();
 
 } else {
@@ -206,9 +211,8 @@ if (!jwt|| jwtIsExpire(jwt)) {
 }
 
 // för  visa nya medelande från andra
-let refreshchat = setInterval(function() {
+let refreshchat = setInterval(function () {
     if (channel) {
         showChatmessages();
     }
-  }, 3000);
-
+}, 3000);

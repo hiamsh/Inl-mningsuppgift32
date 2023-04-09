@@ -25,6 +25,12 @@ db.data ||= { users: [], channels: [] }
 const { users } = db.data
 const { channels } = db.data
 
+const guestUser = {
+    "id": "0-0-0-0-0",
+    "username": "guest",
+    "hashedPassword": ""
+}
+
 const verifyJwt = (req, res, next) => {
     const bearer = req.headers.authorization;
     if (!bearer) {
@@ -38,6 +44,23 @@ const verifyJwt = (req, res, next) => {
         next();
     } catch (error) {
         return res.status(400).send('token not valid ');
+    }
+};
+
+const checkPermission = async (req, res, next) => {
+    const loggedIn = req.headers.authorization;
+    const { channelId } = req.params;
+
+    const channel = channels.find((x) => x.id === channelId)
+
+    if (!channel) {
+        return res.status(400).send()
+    }
+    // om kanal är privat och användare inte fins i kanal
+    if (loggedIn || (channel.private && !loggedIn)) {
+        return verifyJwt(req, res, next);
+    } else {
+        return next();
     }
 };
 
@@ -57,14 +80,14 @@ app.post('/login', (req, res) => {
             await db.write()
             res.send(getJwt(id, username));
         });
-    } 
-        // annars användare logga in som normalt
+    }
+    // annars användare logga in som normalt
     else {
         bcrypt.compare(password, user.hashedPassword, (err, result) => {
             if (err) {
                 return res.status(500).send();
             } else if (!result) {
-                return  res.status(401).send('incorrect password');
+                return res.status(401).send('incorrect password');
             }
             res.send(getJwt(user.id, user.username));
         });
@@ -81,16 +104,16 @@ app.get('/channels/:channelname', verifyJwt, async (req, res) => {
 
     const channel = channels.find((x) => x.channelname === channelname)
 
-    if (!channel){
+    if (!channel) {
         return res.status(404).send();
-    } else if(!channel.members.includes(userId) && channel.private){
+    } else if (!channel.members.includes(userId) && channel.private) {
         return res.status(401).send();
     }
 
     res.send(channel);
 });
 
-app.get('/channels/', verifyJwt, async (req, res) => {
+app.get('/channels/', async (req, res) => {
     res.send(channels);
 });
 
@@ -99,10 +122,10 @@ app.post('/channels/:channelname', verifyJwt, async (req, res) => {
     const { userId } = req.user;
 
     // kanal är publik ,om användare skrev inte värde på isPrivate
-    let {isPrivate = false} = req.query;
+    let { isPrivate = false } = req.query;
 
     //måste göra det föratt query blir string
-    isPrivate = Boolean(isPrivate=="true")
+    isPrivate = Boolean(isPrivate == "true")
     if (!channelname) {
         return res.status(400).send('invalid channel name');
     }
@@ -122,12 +145,12 @@ app.post('/channels/:channelname', verifyJwt, async (req, res) => {
 
 });
 
-app.post('/channels/:channelId/messages', verifyJwt, async (req, res) => {
+app.post('/channels/:channelId/messages', checkPermission, async (req, res) => {
     const { text } = req.body;
-    const { userId } = req.user;
+    const userId = req.user?.userId;
     const { channelId } = req.params;
 
-    const user = users.find((x) => x.id === userId)
+    const user = users.find((x) => x.id === userId) ?? guestUser
 
     if (!user || !text) {
         return res.status(400).send('enter valid userid and message text');
@@ -139,11 +162,11 @@ app.post('/channels/:channelId/messages', verifyJwt, async (req, res) => {
     if (!channel) {
         return res.status(404).send(`channel with id ${channelId} is not found`)
     }
-    if (!channel.members.includes(userId) && channel.private) {
+    if (!channel.members.includes(user.id) && channel.private) {
         return res.status(401);
     }
 
-    channel.messages.push({ id: messageId, text, userId, postDate: new Date(), lastUpdatedDate: new Date(), deleted: false });
+    channel.messages.push({ id: messageId, text, userId: user.id, postDate: new Date(), lastUpdatedDate: new Date(), deleted: false });
     await db.write()
     res.send(`message sent to channel ${channel.channelname}`);
 });
@@ -179,23 +202,23 @@ app.put('/channels/:channelId/messages/:messageId', verifyJwt, async (req, res) 
     message.lastUpdatedDate = new Date();
     await db.write()
 
-        res.send(`message ${messageId} edit success`);
+    res.send(`message ${messageId} edit success`);
 });
 
 app.delete('/channels/:channelId/messages/:messageId', verifyJwt, async (req, res) => {
     const { text } = req.body;
-    const { userId} = req.user;
-    const {channelId, messageId} = req.params;
+    const { userId } = req.user;
+    const { channelId, messageId } = req.params;
 
     const user = users.find((x) => x.id === userId)
 
-        if (!user || !text) {
+    if (!user || !text) {
         return res.status(400).send('enter valid userid and message text');
     }
 
     let channel = channels.find((x) => x.id === channelId)
 
-    if (!channel){
+    if (!channel) {
         return res.status(404).send(`channel with id ${channelId} is not found`)
     }
 
@@ -209,40 +232,41 @@ app.delete('/channels/:channelId/messages/:messageId', verifyJwt, async (req, re
         return res.status(404);
     }
 
-    message.deleted=true;
+    message.deleted = true;
     await db.write()
 
     res.send(`message ${messageId} delete success`);
 });
 
-app.get('/channels/:channelId/messages', verifyJwt, (req, res) => {
-    const { userId } = req.user;
+app.get('/channels/:channelId/messages', checkPermission, (req, res) => {
+    const userId = req.user?.userId;
     const { channelId } = req.params;
     const user = users.find((x) => x.id === userId)
     const channel = channels.find((x) => x.id === channelId)
 
-    if (!user || !channel) {
+    if (!channel) {
         return res.status(400).send()
     }
-    // om kanal är privat och användare inte fins i kanal
-    if (!channel.members.includes(user.id) && channel.private) {
+
+    const cantView = channel.private && (!user || !channel.members.includes(user.id));
+
+    // om kanal är privat eller giltig  användare inte fins i kanal
+    if (cantView) {
         return res.status(401).send();
     }
 
     //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
     const messages = channel.messages.map((x) => {
-        const member = users.find((user) => user.id === x.userId);
-        if (!(channel.private && member && !channel.members.includes(member.id))) {
-            return {
-                id: x.id,
-                text: x.text,
-                postDate: x.postDate,
-                userId: member.id,
-                username: member.username
+        const member = users.find((user) => user.id === x.userId) ?? guestUser;
 
+        return {
+            id: x.id,
+            text: x.text,
+            postDate: x.postDate,
+            userId: member.id,
+            username: member.username
 
-            };
-        }
+        };
     });
 
     res.send(messages);
